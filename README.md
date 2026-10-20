@@ -1,0 +1,110 @@
+# How does dexamethasone change gene expression in airway smooth muscle cells?
+
+An end-to-end bulk **RNA-seq differential expression** analysis of a public dataset, from raw
+reads to biological interpretation, written to be fully reproducible.
+
+**Data:** Himes *et al.* (2014) *PLoS ONE* 9:e99625 · GEO [GSE52778](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE52778)
+Primary human airway smooth muscle cells from **4 donors (cell lines)**, each **untreated** and
+**treated with dexamethasone** (1 µM, 18 h), a glucocorticoid used to treat asthma.
+8 samples, paired-end Illumina reads.
+
+## Key results
+
+| | |
+|---|---|
+| Genes tested | 16,139 |
+| Significant (padj < 0.05) | 4,081 |
+| Significant and ≥ 2-fold change | **760** (412 up, 348 down) |
+| Top genes | *SPARCL1*, *CACNB2*, *DUSP1*, *SAMHD1*, *MAOA*, *GPX3* |
+
+**Positive control:** all six classic glucocorticoid-responsive genes checked were strongly induced in
+all four donors: *ZBTB16* (log2FC 7.3, ~150-fold), *KLF15* (4.4), *FKBP5* (4.0), *PER1* (3.2),
+*TSC22D3*/GILZ (3.1) and *DUSP1* (2.9). This confirms that the treatment worked and the analysis
+recovers the expected biology.
+
+**Pathways (GO Biological Process):** up-regulated genes are enriched for *muscle system process*,
+*extracellular matrix organisation* and *cell–substrate adhesion* (44 terms in total);
+down-regulated genes for *blood circulation*, *cell projection morphogenesis* and
+*positive regulation of phosphorylation* (184 terms in total).
+
+![GO enrichment](docs/go_bp_dotplot.png)
+
+| PCA | Volcano plot |
+|---|---|
+| ![PCA](docs/pca.png) | ![Volcano](docs/volcano.png) |
+| **Known glucocorticoid-responsive genes** | **Top 50 genes** |
+| ![Markers](docs/marker_genes.png) | ![Heatmap](docs/top50_heatmap.png) |
+
+## Methods
+
+**Phase 1: from published counts (R)**
+- Gene-level counts from the Bioconductor package [`airway`](https://bioconductor.org/packages/airway/)
+- Genes kept if ≥ 10 reads in ≥ 4 samples
+- **DESeq2** with design `~ cell_line + treatment`. Each donor was measured both treated and
+  untreated, so donor is a blocking factor (a **paired** analysis). This removes
+  donor-to-donor differences and increases power.
+- Log2 fold changes shrunk with **apeglm** for ranking and plotting
+- Significance: Benjamini–Hochberg adjusted p < 0.05 and |log2FC| ≥ 1
+- **GO Biological Process** over-representation (clusterProfiler), up- and down-regulated genes
+  separately, against a background of all tested genes
+
+**Phase 2: from raw reads (Linux / WSL)**
+- Reads downloaded from SRA (`sra-tools`), by default 2 million read pairs per sample
+- **FastQC + MultiQC** for read quality
+- **Salmon** (selective alignment, GC-bias correction) against the GENCODE human transcriptome
+- **tximport** to summarise transcripts to genes, then the same DESeq2 analysis
+- Fold changes compared with Phase 1 to check the two pipelines agree
+
+## How to run
+
+### Phase 1 (Windows, Mac or Linux: R only)
+1. Install [R](https://cran.r-project.org/) and [RStudio](https://posit.co/download/rstudio-desktop/).
+2. Download this repository (**Code → Download ZIP**) and unzip it.
+3. In RStudio: **Session → Set Working Directory → Choose Directory…** and pick the project folder.
+4. In the console:
+   ```r
+   source("install_packages.R")   # once, about 10 minutes
+   source("run_phase1.R")         # about 2 minutes
+   ```
+5. Results appear in `results/tables` and `results/figures`.
+
+### Phase 2 (Linux, macOS, or Windows with WSL)
+```bash
+conda env create -f envs/phase2.yml
+conda activate rnaseq-airway
+bash run_phase2.sh 2000000 4        # read pairs per sample, CPU threads
+```
+By default only protein-coding transcripts are indexed (`PROTEIN_CODING_ONLY=1`), so Salmon runs on
+a laptop with 8 GB RAM. Use `PROTEIN_CODING_ONLY=0` for the full transcriptome (about 16 GB RAM).
+
+## Repository layout
+```
+R/01_get_counts.R        counts from the airway package or from Salmon (tximport)
+R/02_deseq2.R            DESeq2, shrinkage, annotation, summary
+R/03_figures.R           PCA, sample distances, MA, volcano, heatmap, marker genes
+R/04_enrichment.R        GO enrichment (clusterProfiler)
+R/05_compare_phases.R    Phase 1 vs Phase 2 agreement
+scripts/01-03_*.sh       SRA download, FastQC/MultiQC, Salmon
+run_phase1.R, run_phase2.sh, install_packages.R, envs/phase2.yml
+data/samples.tsv         sample sheet (SRA run, donor, treatment)
+results/                 tables and figures
+```
+
+## Interpretation
+
+<!-- Write this section in your own words: it is what interviewers will ask about. Prompts:
+- Which genes are most strongly induced, and what is known about them in airway/asthma?
+- Why do DUSP1 and TSC22D3 (GILZ) matter for the anti-inflammatory effect of glucocorticoids?
+- What do the enriched GO terms suggest the drug does to these cells?
+- How much did donor (cell line) contribute to the variation, and why does the paired design help?
+- How do your results compare with Himes et al. 2014 (e.g. CRISPLD2)?
+-->
+
+## Limitations
+- Four donors only, one dose and one time point
+- Expression change does not equal protein or functional change
+- Phase 2 uses a subset of reads by default, which reduces power for weakly expressed genes
+
+## Author
+**Alva Melita Alwin** · MSc Bioinformatics & Computational Biology, University College Cork ·
+5 years of NGS library preparation at MedGenome

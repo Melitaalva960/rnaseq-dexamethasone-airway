@@ -1,0 +1,13 @@
+# Command-line tools for Phase 2 (raw reads -> counts). Linux / WSL / macOS.
+#   conda env create -f envs/phase2.yml
+#   conda activate rnaseq-airway
+name: rnaseq-airway
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - sra-tools>=3.0
+  - fastqc
+  - multiqc
+  - salmon=1.10
+  - pigz

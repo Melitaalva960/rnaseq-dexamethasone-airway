@@ -1,0 +1,26 @@
+Input: airway | design: ~ cell_line + treatment | LFC shrinkage: apeglm
+Genes tested: 16139
+padj < 0.05 (any fold change): 4081
+padj < 0.05 and |log2FC| >= 1: 760  (up 412, down 348)
+
+Top 10 genes by adjusted p-value:
+  symbol log2FC      padj
+ SPARCL1   4.56 5.64e-132
+  CACNB2   3.28 5.64e-132
+   DUSP1   2.94 1.27e-124
+  SAMHD1   3.75 2.97e-124
+    MAOA   3.34 3.61e-119
+    GPX3   3.71 1.37e-106
+  STEAP2   1.96 4.04e-101
+    NEXN   2.02  1.24e-96
+    MT2A   2.20  2.00e-91
+ ADAMTS1   2.33  4.10e-85
+
+Known glucocorticoid-responsive genes (positive control):
+  symbol log2FC      padj
+   FKBP5   3.97  7.44e-26
+ TSC22D3   3.11  3.24e-19
+    PER1   3.17  1.86e-81
+  ZBTB16   7.27  2.72e-40
+   KLF15   4.43  7.81e-78
+   DUSP1   2.94 1.27e-124
