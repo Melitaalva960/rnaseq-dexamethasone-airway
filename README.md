@@ -1,7 +1,7 @@
 # How does dexamethasone change gene expression in airway smooth muscle cells?
 
 An end-to-end bulk **RNA-seq differential expression** analysis of a public dataset, from raw
-reads to biological interpretation, written to be fully reproducible.
+reads to biological interpretation.
 
 **Data:** Himes *et al.* (2014) *PLoS ONE* 9:e99625 · GEO [GSE52778](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE52778)
 Primary human airway smooth muscle cells from **4 donors (cell lines)**, each **untreated** and
@@ -59,14 +59,12 @@ down-regulated genes for *blood circulation*, *cell projection morphogenesis* an
 
 ### Phase 1 (Windows, Mac or Linux: R only)
 1. Install [R](https://cran.r-project.org/) and [RStudio](https://posit.co/download/rstudio-desktop/).
-2. Download this repository (**Code → Download ZIP**) and unzip it.
-3. In RStudio: **Session → Set Working Directory → Choose Directory…** and pick the project folder.
-4. In the console:
+2. In the console:
    ```r
    source("install_packages.R")   # once, about 10 minutes
    source("run_phase1.R")         # about 2 minutes
    ```
-5. Results appear in `results/tables` and `results/figures`.
+3. Results appear in `results/tables` and `results/figures`.
 
 ### Phase 2 (Linux, macOS, or Windows with WSL)
 ```bash
@@ -74,8 +72,7 @@ conda env create -f envs/phase2.yml
 conda activate rnaseq-airway
 bash run_phase2.sh 2000000 4        # read pairs per sample, CPU threads
 ```
-By default only protein-coding transcripts are indexed (`PROTEIN_CODING_ONLY=1`), so Salmon runs on
-a laptop with 8 GB RAM. Use `PROTEIN_CODING_ONLY=0` for the full transcriptome (about 16 GB RAM).
+
 
 ## Repository layout
 ```
@@ -90,7 +87,6 @@ data/samples.tsv         sample sheet (SRA run, donor, treatment)
 results/                 tables and figures
 ```
 
-## Interpretation
 
 ## Interpretation
 
