@@ -92,14 +92,49 @@ results/                 tables and figures
 
 ## Interpretation
 
-<!-- Write this section in your own words: it is what interviewers will ask about. Prompts:
-- Which genes are most strongly induced, and what is known about them in airway/asthma?
-- Why do DUSP1 and TSC22D3 (GILZ) matter for the anti-inflammatory effect of glucocorticoids?
-- What do the enriched GO terms suggest the drug does to these cells?
-- How much did donor (cell line) contribute to the variation, and why does the paired design help?
-- How do your results compare with Himes et al. 2014 (e.g. CRISPLD2)?
--->
+## Interpretation
 
+**1. Dexamethasone has a strong, consistent effect.**
+In the PCA plot, the biggest source of variation (PC1, 43%) separates treated from untreated
+samples. All four donors respond in the same direction, even though they differ from each other.
+760 genes changed at least 2-fold (412 up, 348 down).
+
+**2. The analysis finds the genes we expect.**
+Genes that are known to be switched on by steroids all went up strongly in every donor:
+- *FKBP5*: the cell's "brake" on the steroid receptor (negative feedback). It is the classic
+  marker that a steroid is working.
+- *TSC22D3* (also called GILZ) and *DUSP1*: two well-known **anti-inflammatory** genes.
+  GILZ blocks inflammatory signalling (NF-κB), and DUSP1 switches off inflammatory
+  kinases (MAPKs).
+- *ZBTB16*, *KLF15* and *PER1*: other well-known steroid-response genes; *ZBTB16*
+  increased about 150-fold.
+
+Finding these genes is a positive control: it shows the data and the analysis are working.
+
+**3. This helps explain how steroids treat asthma.**
+Anti-inflammatory genes go up (*DUSP1*, *TSC22D3*), while genes that help inflammation go down,
+for example *VCAM1* (helps immune cells stick to tissue) and *CXCL12* (attracts immune cells).
+The pathway analysis agrees: down-regulated genes are enriched for *positive regulation of
+phosphorylation*, which fits with signalling being dampened.
+
+**4. The airway muscle cells themselves are reshaped.**
+Up-regulated genes are enriched for *muscle system process*, *extracellular matrix
+organisation* and *cell–substrate adhesion*. Dexamethasone therefore changes not only
+inflammation but also how the muscle cells build and attach to their surroundings, which matters
+for airway remodelling in asthma.
+
+**5. My results agree with the original study.**
+Himes et al. (2014) highlighted *CRISPLD2* as a steroid-induced gene linked to asthma. In my
+analysis *CRISPLD2* is also strongly increased (log2FC 2.6, about 6-fold).
+
+**6. Why the paired design matters.**
+Donors differ from each other (PC2, 25% of the variation). Because every donor was measured both
+with and without the drug, including donor in the model (`~ cell_line + treatment`) compares each
+donor with itself. This removes donor differences and makes the drug effect easier to detect.
+
+**Conclusion:** in airway smooth muscle cells, dexamethasone switches on a clear
+anti-inflammatory programme and changes genes involved in muscle function and tissue structure.
+This is consistent with how inhaled steroids reduce airway inflammation in asthma.
 ## Limitations
 - Four donors only, one dose and one time point
 - Expression change does not equal protein or functional change
